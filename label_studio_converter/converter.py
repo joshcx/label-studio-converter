@@ -23,6 +23,9 @@ from label_studio_converter.audio import convert_to_asr_json_manifest
 
 logger = logging.getLogger(__name__)
 
+def box_to_segmentation(x, y, w, h):
+    return [x, y, x+w, y, x+w, y+h, x, y+h]
+
 def label_mapper(category_name):
     if category_name == "Text":
         return 0
@@ -483,7 +486,7 @@ class Converter(object):
                         'id': annotation_id,
                         'image_id': image_id,
                         'category_id': category_id,
-                        'segmentation': [],
+                        'segmentation': box_to_segmentation(x, y, w, h),
                         'bbox': [x, y, w, h],
                         'ignore': 0,
                         'iscrowd': 0,
