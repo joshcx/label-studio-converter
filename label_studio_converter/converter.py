@@ -23,6 +23,17 @@ from label_studio_converter.audio import convert_to_asr_json_manifest
 
 logger = logging.getLogger(__name__)
 
+def label_mapper(category_name):
+    if category_name == "Text":
+        return 0
+    if category_name == "Title":
+        return 1
+    if category_name == "List":
+        return 2
+    if category_name == "Table":
+        return 3
+    if category_name == "Figure":
+        return 4
 
 class FormatNotSupportedError(NotImplementedError):
     pass
@@ -416,7 +427,13 @@ class Converter(object):
                     logger.error('Unable to download {image_path}. The item {item} will be skipped'.format(
                         image_path=image_path, item=item
                     ), exc_info=True)
-            labels = next(iter(item['output'].values()))
+                    
+            labels = []
+            for val in item['output'].values():
+                for v in val:
+                    labels.append(v)
+     
+            # labels = next(iter(item['output'].values()))
             if len(labels) == 0:
                 logger.error('Empty bboxes.')
                 continue
@@ -445,7 +462,8 @@ class Converter(object):
                     first = False
 
                 if category_name not in category_name_to_id:
-                    category_id = len(categories)
+                    #category_id = len(categories)
+                    category_id = label_mapper(category_name)
                     category_name_to_id[category_name] = category_id
                     categories.append({
                         'id': category_id,
