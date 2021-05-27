@@ -24,7 +24,7 @@ from label_studio_converter.audio import convert_to_asr_json_manifest
 logger = logging.getLogger(__name__)
 
 def box_to_segmentation(x, y, w, h):
-    return [x, y, x+w, y, x+w, y+h, x, y+h]
+    return [[x, y, x+w, y, x+w, y+h, x, y+h]]
 
 def label_mapper(category_name):
     if category_name == "Text":
